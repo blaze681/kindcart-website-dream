@@ -1,13 +1,16 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Heart, Menu, X } from 'lucide-react';
+import { Heart, Menu, X, User, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const location = useLocation();
+  const { user, logout } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,6 +27,11 @@ const Header = () => {
     { name: 'Impact', path: '/impact' },
     { name: 'Contact', path: '/contact' }
   ];
+
+  const handleLogout = () => {
+    logout();
+    setShowUserMenu(false);
+  };
 
   return (
     <header 
@@ -65,14 +73,55 @@ const Header = () => {
             ))}
           </nav>
 
-          {/* CTA Button */}
-          <div className="hidden md:block">
-            <Button 
-              asChild
-              className="gradient-peach-lavender text-white hover:scale-105 transition-transform duration-300 rounded-full px-6"
-            >
-              <Link to="/donate">Donate Now</Link>
-            </Button>
+          {/* Desktop Auth Section */}
+          <div className="hidden md:flex items-center space-x-4">
+            {user ? (
+              <div className="relative">
+                <Button
+                  variant="ghost"
+                  className="flex items-center space-x-2"
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                >
+                  <User className="w-4 h-4" />
+                  <span>{user.name.split(' ')[0]}</span>
+                </Button>
+                
+                {showUserMenu && (
+                  <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border py-2 z-50">
+                    <Link 
+                      to="/dashboard"
+                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                      onClick={() => setShowUserMenu(false)}
+                    >
+                      Dashboard
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 flex items-center space-x-2"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <>
+                <Button 
+                  asChild
+                  variant="ghost"
+                  className="text-gray-700 hover:text-purple-600"
+                >
+                  <Link to="/login">Sign In</Link>
+                </Button>
+                <Button 
+                  asChild
+                  className="gradient-peach-lavender text-white hover:scale-105 transition-transform duration-300 rounded-full px-6"
+                >
+                  <Link to="/register">Join Now</Link>
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -102,14 +151,42 @@ const Header = () => {
                   {item.name}
                 </Link>
               ))}
-              <Button 
-                asChild
-                className="w-full gradient-peach-lavender text-white rounded-full"
-              >
-                <Link to="/donate" onClick={() => setIsMenuOpen(false)}>
-                  Donate Now
-                </Link>
-              </Button>
+              
+              {user ? (
+                <>
+                  <Link
+                    to="/dashboard"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-100"
+                  >
+                    Dashboard
+                  </Link>
+                  <button
+                    onClick={() => { handleLogout(); setIsMenuOpen(false); }}
+                    className="w-full text-left px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-100"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-100"
+                  >
+                    Sign In
+                  </Link>
+                  <Button 
+                    asChild
+                    className="w-full gradient-peach-lavender text-white rounded-full"
+                  >
+                    <Link to="/register" onClick={() => setIsMenuOpen(false)}>
+                      Join Now
+                    </Link>
+                  </Button>
+                </>
+              )}
             </nav>
           </div>
         )}
