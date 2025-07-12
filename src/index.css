@@ -59,6 +59,21 @@
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Poppins', 'Fredoka', sans-serif;
     font-weight: 700;
+    color: hsl(220 10% 20%); /* Dark gray for better contrast */
+  }
+
+  /* Improved text contrast across all elements */
+  p, span, div, li, td, th {
+    color: hsl(220 10% 25%); /* Darker text for better readability */
+  }
+
+  /* Ensure proper contrast for interactive elements */
+  a, button {
+    color: hsl(220 10% 20%);
+  }
+
+  a:hover, button:hover {
+    color: hsl(220 10% 10%);
   }
 
   .font-secondary {
@@ -87,6 +102,10 @@
 
   .font-dm-sans {
     font-family: 'DM Sans', sans-serif;
+  }
+
+  .font-quicksand {
+    font-family: 'Quicksand', sans-serif;
   }
 }
 
@@ -217,6 +236,30 @@
   .btn-heart-beat:hover {
     animation: heartBeat 0.8s ease-in-out;
   }
+
+  /* Enhanced Text Contrast Classes */
+  .text-high-contrast {
+    color: hsl(220 10% 15%);
+  }
+
+  .text-medium-contrast {
+    color: hsl(220 10% 25%);
+  }
+
+  .text-low-contrast {
+    color: hsl(220 10% 45%);
+  }
+
+  /* Focus states for accessibility */
+  .focus-ring:focus {
+    outline: 2px solid hsl(280 100% 70%);
+    outline-offset: 2px;
+  }
+
+  .focus-ring:focus-visible {
+    outline: 2px solid hsl(280 100% 70%);
+    outline-offset: 2px;
+  }
 }
 
 @keyframes gentleFloat {
@@ -346,18 +389,21 @@
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.02em;
+  color: hsl(220 10% 15%);
 }
 
 .text-premium-lg {
   font-size: 2.5rem;
   font-weight: 600;
   line-height: 1.2;
+  color: hsl(220 10% 15%);
 }
 
 .text-premium-md {
   font-size: 1.5rem;
   font-weight: 500;
   line-height: 1.4;
+  color: hsl(220 10% 20%);
 }
 
 @media (max-width: 768px) {
@@ -367,5 +413,25 @@
   
   .text-premium-lg {
     font-size: 2rem;
+  }
+}
+
+/* Print styles for certificates */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .print-only {
+    display: block !important;
+  }
+  
+  body {
+    font-size: 12pt;
+    line-height: 1.4;
+  }
+  
+  .certificate {
+    page-break-inside: avoid;
   }
 }

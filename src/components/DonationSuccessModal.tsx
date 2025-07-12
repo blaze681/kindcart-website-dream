@@ -10,6 +10,8 @@ interface DonationSuccessModalProps {
   userName: string;
   selectedItems: string[];
   onMakeAnotherDonation: () => void;
+  onShowCertificate?: () => void;
+  isFirstDonation?: boolean;
 }
 
 const DonationSuccessModal: React.FC<DonationSuccessModalProps> = ({
@@ -17,7 +19,9 @@ const DonationSuccessModal: React.FC<DonationSuccessModalProps> = ({
   onClose,
   userName,
   selectedItems,
-  onMakeAnotherDonation
+  onMakeAnotherDonation,
+  onShowCertificate,
+  isFirstDonation = false
 }) => {
   const itemNames = selectedItems.map(id => {
     const itemMap: { [key: string]: string } = {
@@ -32,7 +36,6 @@ const DonationSuccessModal: React.FC<DonationSuccessModalProps> = ({
 
   useEffect(() => {
     if (isOpen) {
-      // Scroll to top when modal opens
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [isOpen]);
@@ -56,22 +59,38 @@ const DonationSuccessModal: React.FC<DonationSuccessModalProps> = ({
               Thank You, {userName}! 💝
             </DialogTitle>
             <div className="space-y-4">
-              <p className="text-xl text-gray-700 font-nunito leading-relaxed">
+              <p className="text-xl text-gray-800 font-nunito leading-relaxed font-medium">
                 Your gift of <span className="font-semibold text-purple-600">{itemNames}</span> will brighten a child's day!
               </p>
-              <div className="flex items-center justify-center space-x-2 text-lg text-gray-600">
+              <div className="flex items-center justify-center space-x-2 text-lg text-gray-700">
                 <Gift className="w-6 h-6 text-pink-500" />
-                <span>Your kindness makes a difference</span>
+                <span className="font-medium">Your kindness makes a difference</span>
                 <Gift className="w-6 h-6 text-pink-500" />
               </div>
             </div>
           </DialogHeader>
 
+          {/* First Donation Special Message */}
+          {isFirstDonation && (
+            <div className="bg-gradient-to-r from-yellow-50 to-pink-50 p-6 rounded-2xl border-2 border-yellow-200">
+              <p className="text-lg font-semibold text-amber-700 mb-3">🎉 Special Achievement Unlocked!</p>
+              <p className="text-gray-700 font-medium">This is your first donation - you're now a Kindness Hero!</p>
+            </div>
+          )}
+
           {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md">
+          <div className="flex flex-col sm:flex-row gap-4 w-full max-w-lg">
+            {isFirstDonation && onShowCertificate && (
+              <Button
+                onClick={onShowCertificate}
+                className="flex-1 gradient-peach-lavender text-white py-4 px-6 rounded-2xl text-lg font-semibold hover:scale-105 transition-all duration-300 hover:shadow-lg"
+              >
+                🎓 Get Your Certificate!
+              </Button>
+            )}
             <Button
               onClick={onMakeAnotherDonation}
-              className="flex-1 gradient-peach-lavender text-white py-4 px-8 rounded-2xl text-lg font-semibold hover:scale-105 transition-all duration-300 hover:shadow-lg"
+              className="flex-1 gradient-peach-lavender text-white py-4 px-6 rounded-2xl text-lg font-semibold hover:scale-105 transition-all duration-300 hover:shadow-lg"
             >
               <Heart className="w-5 h-5 mr-2" fill="currentColor" />
               Make Another Donation
@@ -79,7 +98,7 @@ const DonationSuccessModal: React.FC<DonationSuccessModalProps> = ({
             <Button
               variant="outline"
               onClick={onClose}
-              className="flex-1 border-2 border-gray-300 text-gray-700 py-4 px-8 rounded-2xl text-lg font-semibold hover:bg-gray-50 transition-all duration-300"
+              className="flex-1 border-2 border-gray-300 text-gray-800 py-4 px-6 rounded-2xl text-lg font-semibold hover:bg-gray-50 transition-all duration-300 font-medium"
             >
               Close
             </Button>

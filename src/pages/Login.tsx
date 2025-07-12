@@ -21,11 +21,17 @@ const Login = () => {
     e.preventDefault();
     setError('');
     
+    // Basic validation
+    if (!email.trim() || !password.trim()) {
+      setError('Please enter both email and password');
+      return;
+    }
+    
     const success = await login(email, password);
     if (success) {
       navigate('/dashboard');
     } else {
-      setError('Invalid email or password');
+      setError('Incorrect email or password. Please try again or check your credentials.');
     }
   };
 
@@ -64,7 +70,7 @@ const Login = () => {
                   <h2 className="text-premium-lg text-white font-baloo">
                     Welcome to <span className="bg-gradient-to-r from-yellow-300 to-pink-300 bg-clip-text text-transparent">KindCart</span>
                   </h2>
-                  <p className="text-xl text-white/90 font-quicksand leading-relaxed">
+                  <p className="text-xl text-white font-quicksand leading-relaxed">
                     {currentQuote}
                   </p>
                 </div>
@@ -72,17 +78,17 @@ const Login = () => {
                 <div className="flex justify-center space-x-4 mt-8">
                   <div className="text-center">
                     <div className="text-3xl font-bold text-white animate-counter">500+</div>
-                    <div className="text-white/80 font-quicksand">Children Helped</div>
+                    <div className="text-white/90 font-quicksand">Children Helped</div>
                   </div>
                   <div className="w-px bg-white/30"></div>
                   <div className="text-center">
                     <div className="text-3xl font-bold text-white animate-counter">1000+</div>
-                    <div className="text-white/80 font-quicksand">Gifts Delivered</div>
+                    <div className="text-white/90 font-quicksand">Gifts Delivered</div>
                   </div>
                   <div className="w-px bg-white/30"></div>
                   <div className="text-center">
                     <div className="text-3xl font-bold text-white animate-counter">15+</div>
-                    <div className="text-white/80 font-quicksand">Cities Reached</div>
+                    <div className="text-white/90 font-quicksand">Cities Reached</div>
                   </div>
                 </div>
               </div>
@@ -91,7 +97,7 @@ const Login = () => {
             {/* Founders Section */}
             <div className="glass-card rounded-3xl p-6 hover-lift">
               <div className="text-center">
-                <p className="text-white/90 font-quicksand mb-4">Started by three amazing Grade 3 students:</p>
+                <p className="text-white font-quicksand mb-4">Started by three amazing Grade 3 students:</p>
                 <div className="flex justify-center space-x-6">
                   <div className="text-center">
                     <div className="w-16 h-16 gradient-soft-peach rounded-full flex items-center justify-center mb-2 animate-soft-bounce">
@@ -133,7 +139,7 @@ const Login = () => {
             <Card className="glass-card-darker border-white/20 shadow-2xl rounded-3xl overflow-hidden hover-lift">
               <CardHeader className="text-center pb-6">
                 <CardTitle className="text-premium-md text-white font-baloo mb-2">Welcome Back!</CardTitle>
-                <p className="text-white/80 font-quicksand">Sign in to continue spreading kindness</p>
+                <p className="text-white/90 font-quicksand">Sign in to continue spreading kindness</p>
                 
                 <div className="flex justify-center mt-4">
                   <Sparkles className="w-6 h-6 text-yellow-300 animate-sparkle" />
@@ -207,7 +213,7 @@ const Login = () => {
                 </form>
 
                 <div className="mt-8 text-center">
-                  <p className="text-white/80 font-quicksand">
+                  <p className="text-white/90 font-quicksand">
                     Don't have an account?{' '}
                     <Link to="/register" className="text-yellow-300 hover:text-yellow-200 font-medium underline decoration-wavy underline-offset-2 transition-colors">
                       Join our kindness community
@@ -217,7 +223,7 @@ const Login = () => {
 
                 <div className="mt-6 p-4 bg-blue-100/10 rounded-2xl backdrop-blur-sm border border-blue-300/20">
                   <p className="text-xs text-blue-200 font-medium mb-3 font-quicksand text-center">Demo Credentials:</p>
-                  <div className="space-y-1 text-xs text-blue-100/90 font-quicksand">
+                  <div className="space-y-1 text-xs text-blue-100 font-quicksand">
                     <p><span className="font-medium">Admin:</span> admin@kindcart.org / password123</p>
                     <p><span className="font-medium">User:</span> john@example.com / password123</p>
                   </div>
