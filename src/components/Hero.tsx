@@ -25,14 +25,9 @@ const Hero = () => {
           
           {/* Left Content */}
           <div className="text-center lg:text-left space-y-8">
-            <div className="inline-flex items-center space-x-3 glass-card rounded-full px-6 py-3 mb-6 hover-lift">
-              <Heart className="w-5 h-5 text-pink-600 animate-heart-pulse" fill="currentColor" />
-              <span className="text-sm font-medium text-gray-700 font-quicksand">Started by Grade 3 children</span>
-              <Sparkles className="w-4 h-4 text-yellow-500 animate-sparkle" />
-            </div>
             
-            <div className="space-y-6">
-              <h1 className="text-premium-xl font-baloo text-white leading-tight">
+            <div className="space-y-8">
+              <h1 className="text-[3rem] md:text-[4rem] lg:text-[4.5rem] font-poppins font-bold text-white leading-[1.4] tracking-tight">
                 Big hearts,
                 <br />
                 <span className="bg-gradient-to-r from-yellow-300 via-pink-300 to-purple-300 bg-clip-text text-transparent animate-glow-pulse">
@@ -40,16 +35,41 @@ const Hero = () => {
                 </span>
               </h1>
               
-              <p className="text-2xl md:text-3xl text-white/95 font-quicksand leading-relaxed">
+              <p className="text-xl md:text-2xl lg:text-3xl text-white/95 font-nunito leading-[1.5] font-medium">
                 A small gift from{' '}
                 <span className="relative inline-block">
-                  <span className="bg-gradient-to-r from-yellow-200 to-pink-200 bg-clip-text text-transparent font-semibold">
+                  <span className="bg-gradient-to-r from-yellow-200 to-pink-200 bg-clip-text text-transparent font-semibold font-quicksand">
                     {rotatingWords[currentWord]}
                   </span>
                   <div className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-yellow-300 to-pink-300 transform origin-left animate-pulse"></div>
                 </span>
                 {' '}can bring a big smile to someone ✨
               </p>
+
+              {/* Repositioned Badge - Now below the tagline */}
+              <div className="flex justify-center lg:justify-start mt-8 mb-8 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
+                <div className="inline-flex items-center space-x-4 glass-card rounded-full px-8 py-4 hover-lift group shadow-2xl border-2 border-white/20">
+                  <div className="flex items-center space-x-2">
+                    <div className="flex space-x-1">
+                      <span className="text-lg animate-gentle-float">👶🏻</span>
+                      <span className="text-lg animate-gentle-float" style={{ animationDelay: '0.5s' }}>👧🏽</span>
+                      <span className="text-lg animate-gentle-float" style={{ animationDelay: '1s' }}>👦🏼</span>
+                    </div>
+                    <Sparkles className="w-5 h-5 text-yellow-400 animate-sparkle" />
+                  </div>
+                  <div className="text-center">
+                    <span className="text-lg font-quicksand font-bold text-white drop-shadow-sm">
+                      Started by Grade 3 children
+                    </span>
+                    <div className="flex justify-center mt-1 space-x-1">
+                      <Star className="w-3 h-3 text-yellow-300 animate-sparkle fill-current" />
+                      <Star className="w-3 h-3 text-yellow-300 animate-sparkle fill-current" style={{ animationDelay: '0.3s' }} />
+                      <Star className="w-3 h-3 text-yellow-300 animate-sparkle fill-current" style={{ animationDelay: '0.6s' }} />
+                    </div>
+                  </div>
+                  <Heart className="w-6 h-6 text-pink-400 animate-heart-pulse group-hover:scale-110 transition-transform" fill="currentColor" />
+                </div>
+              </div>
             </div>
             
             <div className="flex flex-col sm:flex-row gap-6 justify-center lg:justify-start pt-4">
@@ -92,10 +112,10 @@ const Hero = () => {
                     <span className="animate-gentle-float" style={{ animationDelay: '2s' }}>👦🏼</span>
                   </div>
                   <div className="space-y-2">
-                    <p className="text-white font-baloo text-xl font-semibold">
+                    <p className="text-white font-poppins text-xl font-semibold">
                       Children helping children
                     </p>
-                    <p className="text-white/80 font-quicksand">
+                    <p className="text-white/80 font-nunito text-base">
                       Saanvi, Krisha & Vivaan
                     </p>
                   </div>
@@ -135,10 +155,10 @@ const Hero = () => {
                   <stat.icon className="w-8 h-8 text-white" fill="currentColor" />
                 </div>
               </div>
-              <div className="text-4xl md:text-5xl font-baloo font-bold text-white mb-2 animate-counter" style={{ animationDelay: stat.delay }}>
+              <div className="text-4xl md:text-5xl font-poppins font-bold text-white mb-2 animate-counter" style={{ animationDelay: stat.delay }}>
                 {stat.number}
               </div>
-              <div className="text-white/90 font-quicksand font-medium text-lg">{stat.label}</div>
+              <div className="text-white/90 font-nunito font-medium text-lg">{stat.label}</div>
             </div>
           ))}
         </div>

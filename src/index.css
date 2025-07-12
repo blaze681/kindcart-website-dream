@@ -2,7 +2,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Nunito:wght@300;400;500;600;700;800;900&family=Quicksand:wght@300;400;500;600;700&family=Baloo+2:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Nunito:wght@300;400;500;600;700;800;900&family=Quicksand:wght@300;400;500;600;700&family=Baloo+2:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&family=Fredoka:wght@300;400;500;600;700&display=swap');
 
 /* Custom KindCart Premium Design System */
 @layer base {
@@ -52,13 +52,13 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Nunito', 'Poppins', sans-serif;
     line-height: 1.6;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Baloo 2', 'Poppins', sans-serif;
-    font-weight: 600;
+    font-family: 'Poppins', 'Fredoka', sans-serif;
+    font-weight: 700;
   }
 
   .font-secondary {
@@ -70,11 +70,23 @@
   }
 
   .font-nunito {
-    font-family: 'Nunito', sans-serif;
+    font-family: 'Nunito', 'DM Sans', sans-serif;
   }
 
   .font-baloo {
     font-family: 'Baloo 2', cursive;
+  }
+
+  .font-poppins {
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .font-fredoka {
+    font-family: 'Fredoka', cursive;
+  }
+
+  .font-dm-sans {
+    font-family: 'DM Sans', sans-serif;
   }
 }
 
@@ -170,7 +182,12 @@
   }
 
   .animate-fade-in-up {
-    animation: fadeInUp 0.6s ease-out forwards;
+    animation: fadeInUp 0.8s ease-out forwards;
+    opacity: 0;
+  }
+
+  .animate-counter {
+    animation: counterGlow 2s ease-in-out infinite;
   }
 
   /* Hover Effects */
@@ -239,6 +256,11 @@
 @keyframes fadeInUp {
   0% { opacity: 0; transform: translateY(30px); }
   100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes counterGlow {
+  0%, 100% { text-shadow: 0 0 10px rgba(255, 255, 255, 0.3); }
+  50% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.6); }
 }
 
 @keyframes rotateText {
