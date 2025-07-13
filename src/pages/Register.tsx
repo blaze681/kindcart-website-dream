@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Heart, Mail, Lock, User, Eye, EyeOff, Sparkles, Gift, Users } from 'lucide-react';
+import { Heart, Mail, Lock, User, Eye, EyeOff, Sparkles, Gift, Users, Check, X } from 'lucide-react';
 import FloatingElements from '@/components/FloatingElements';
 
 const Register = () => {
@@ -15,29 +15,31 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
   const { register, isLoading } = useAuth();
   const navigate = useNavigate();
 
+  const validatePassword = (password: string) => {
+    return {
+      length: password.length >= 8,
+      uppercase: /[A-Z]/.test(password),
+      lowercase: /[a-z]/.test(password),
+      number: /[0-9]/.test(password)
+    };
+  };
+
+  const passwordValidation = validatePassword(password);
+  const isPasswordValid = Object.values(passwordValidation).every(Boolean);
+  const passwordsMatch = password === confirmPassword && password.length > 0;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
     
-    if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      return;
-    }
-
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters');
-      return;
-    }
+    if (!isPasswordValid) return;
+    if (!passwordsMatch) return;
     
     const success = await register(name, email, password);
     if (success) {
       navigate('/dashboard');
-    } else {
-      setError('Registration failed. Please try again.');
     }
   };
 
@@ -145,12 +147,6 @@ const Register = () => {
               
               <CardContent className="px-8 pb-8">
                 <form onSubmit={handleSubmit} className="space-y-5">
-                  {error && (
-                    <div className="p-4 rounded-2xl bg-red-100/20 border border-red-300/30 text-red-100 text-sm font-quicksand backdrop-blur-sm">
-                      {error}
-                    </div>
-                  )}
-                  
                   <div className="space-y-3">
                     <Label htmlFor="name" className="text-white font-medium font-quicksand">Full Name</Label>
                     <div className="relative">
@@ -204,6 +200,36 @@ const Register = () => {
                         {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                       </button>
                     </div>
+                    
+                    {/* Password Requirements */}
+                    {password && (
+                      <div className="mt-3 p-3 bg-white/5 rounded-xl backdrop-blur-sm border border-white/10">
+                        <p className="text-white/90 text-sm font-quicksand mb-2">Password Requirements:</p>
+                        <div className="space-y-1">
+                          {[
+                            { key: 'length', label: 'At least 8 characters' },
+                            { key: 'uppercase', label: 'One uppercase letter' },
+                            { key: 'lowercase', label: 'One lowercase letter' },
+                            { key: 'number', label: 'One number' }
+                          ].map(({ key, label }) => (
+                            <div key={key} className="flex items-center space-x-2">
+                              {passwordValidation[key as keyof typeof passwordValidation] ? (
+                                <Check className="w-4 h-4 text-green-400" />
+                              ) : (
+                                <X className="w-4 h-4 text-red-400" />
+                              )}
+                              <span className={`text-sm font-quicksand ${
+                                passwordValidation[key as keyof typeof passwordValidation] 
+                                  ? 'text-green-300' 
+                                  : 'text-white/70'
+                              }`}>
+                                {label}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <div className="space-y-3">
@@ -220,12 +246,26 @@ const Register = () => {
                         required
                       />
                     </div>
+                    {confirmPassword && (
+                      <div className="flex items-center space-x-2 mt-2">
+                        {passwordsMatch ? (
+                          <Check className="w-4 h-4 text-green-400" />
+                        ) : (
+                          <X className="w-4 h-4 text-red-400" />
+                        )}
+                        <span className={`text-sm font-quicksand ${
+                          passwordsMatch ? 'text-green-300' : 'text-red-300'
+                        }`}>
+                          {passwordsMatch ? 'Passwords match' : 'Passwords do not match'}
+                        </span>
+                      </div>
+                    )}
                   </div>
 
                   <Button
                     type="submit"
                     className="w-full h-14 gradient-peach-lilac text-white font-semibold rounded-2xl hover-lift btn-heart-beat font-quicksand text-lg shadow-lg"
-                    disabled={isLoading}
+                    disabled={isLoading || !isPasswordValid || !passwordsMatch}
                   >
                     {isLoading ? (
                       <div className="flex items-center space-x-2">

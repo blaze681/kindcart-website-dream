@@ -6,33 +6,32 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Heart, Mail, Lock, Eye, EyeOff, Sparkles, Star } from 'lucide-react';
+import { Heart, Mail, Lock, Eye, EyeOff, Sparkles, Star, KeyRound } from 'lucide-react';
 import FloatingElements from '@/components/FloatingElements';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
-  const { login, isLoading } = useAuth();
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const { login, resetPassword, isLoading } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    
-    // Basic validation
-    if (!email.trim() || !password.trim()) {
-      setError('Please enter both email and password');
-      return;
-    }
     
     const success = await login(email, password);
     if (success) {
       navigate('/dashboard');
-    } else {
-      setError('Incorrect email or password. Please try again or check your credentials.');
     }
+  };
+
+  const handlePasswordReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await resetPassword(resetEmail);
+    setShowForgotPassword(false);
+    setResetEmail('');
   };
 
   const inspirationalQuotes = [
@@ -43,6 +42,89 @@ const Login = () => {
   ];
 
   const [currentQuote] = useState(inspirationalQuotes[Math.floor(Math.random() * inspirationalQuotes.length)]);
+
+  if (showForgotPassword) {
+    return (
+      <div className="min-h-screen flex items-center justify-center gradient-premium-hero relative overflow-hidden">
+        <FloatingElements />
+        
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="max-w-md mx-auto">
+            <div className="text-center mb-8">
+              <Link to="/" className="inline-flex items-center space-x-3 group">
+                <div className="p-4 rounded-full gradient-peach-lilac group-hover:scale-110 transition-transform duration-300 hover-glow">
+                  <Heart className="w-10 h-10 text-white animate-heart-pulse" fill="currentColor" />
+                </div>
+                <span className="text-premium-lg bg-gradient-to-r from-white to-pink-100 bg-clip-text text-transparent font-baloo">
+                  KindCart
+                </span>
+              </Link>
+            </div>
+
+            <Card className="glass-card-darker border-white/20 shadow-2xl rounded-3xl overflow-hidden hover-lift">
+              <CardHeader className="text-center pb-6">
+                <CardTitle className="text-premium-md text-white font-baloo mb-2">Reset Password</CardTitle>
+                <p className="text-white/90 font-quicksand">Enter your email to reset your password</p>
+                
+                <div className="flex justify-center mt-4">
+                  <KeyRound className="w-6 h-6 text-yellow-300 animate-sparkle" />
+                </div>
+              </CardHeader>
+              
+              <CardContent className="px-8 pb-8">
+                <form onSubmit={handlePasswordReset} className="space-y-6">
+                  <div className="space-y-3">
+                    <Label htmlFor="resetEmail" className="text-white font-medium font-quicksand">Email Address</Label>
+                    <div className="relative">
+                      <Mail className="absolute left-4 top-4 h-5 w-5 text-white/60" />
+                      <Input
+                        id="resetEmail"
+                        type="email"
+                        placeholder="Enter your email"
+                        value={resetEmail}
+                        onChange={(e) => setResetEmail(e.target.value)}
+                        className="pl-12 h-14 bg-white/10 border-white/20 text-white placeholder:text-white/50 rounded-2xl backdrop-blur-sm focus:bg-white/15 focus:border-white/40 transition-all duration-300 hover:bg-white/15"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <Button
+                      type="submit"
+                      className="w-full h-14 gradient-peach-lilac text-white font-semibold rounded-2xl hover-lift btn-heart-beat font-quicksand text-lg shadow-lg"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <div className="flex items-center space-x-2">
+                          <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                          <span>Sending Reset...</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center space-x-2">
+                          <KeyRound className="w-5 h-5" />
+                          <span>Send Reset Instructions</span>
+                        </div>
+                      )}
+                    </Button>
+
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setShowForgotPassword(false)}
+                      className="w-full h-12 bg-white/10 border-white/20 text-white hover:bg-white/15 rounded-2xl font-quicksand"
+                    >
+                      Back to Login
+                    </Button>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center gradient-premium-hero relative overflow-hidden">
@@ -148,12 +230,6 @@ const Login = () => {
               
               <CardContent className="px-8 pb-8">
                 <form onSubmit={handleSubmit} className="space-y-6">
-                  {error && (
-                    <div className="p-4 rounded-2xl bg-red-100/20 border border-red-300/30 text-red-100 text-sm font-quicksand backdrop-blur-sm">
-                      {error}
-                    </div>
-                  )}
-                  
                   <div className="space-y-3">
                     <Label htmlFor="email" className="text-white font-medium font-quicksand">Email Address</Label>
                     <div className="relative">
@@ -193,6 +269,16 @@ const Login = () => {
                     </div>
                   </div>
 
+                  <div className="text-right">
+                    <button
+                      type="button"
+                      onClick={() => setShowForgotPassword(true)}
+                      className="text-yellow-300 hover:text-yellow-200 text-sm font-quicksand underline decoration-wavy underline-offset-2 transition-colors"
+                    >
+                      Forgot your password?
+                    </button>
+                  </div>
+
                   <Button
                     type="submit"
                     className="w-full h-14 gradient-peach-lilac text-white font-semibold rounded-2xl hover-lift btn-heart-beat font-quicksand text-lg shadow-lg"
@@ -222,10 +308,10 @@ const Login = () => {
                 </div>
 
                 <div className="mt-6 p-4 bg-blue-100/10 rounded-2xl backdrop-blur-sm border border-blue-300/20">
-                  <p className="text-xs text-blue-200 font-medium mb-3 font-quicksand text-center">Demo Credentials:</p>
+                  <p className="text-xs text-blue-200 font-medium mb-3 font-quicksand text-center">Demo Info:</p>
                   <div className="space-y-1 text-xs text-blue-100 font-quicksand">
-                    <p><span className="font-medium">Admin:</span> admin@kindcart.org / password123</p>
-                    <p><span className="font-medium">User:</span> john@example.com / password123</p>
+                    <p>Create a new account or use existing demo credentials</p>
+                    <p className="text-yellow-200">New passwords must include: uppercase, lowercase, number, 8+ chars</p>
                   </div>
                 </div>
               </CardContent>
