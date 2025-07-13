@@ -1,10 +1,10 @@
-
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import DonationSuccessModal from '@/components/DonationSuccessModal';
 import HelpRequestSuccessModal from '@/components/HelpRequestSuccessModal';
+import CertificateOfKindness from '@/components/CertificateOfKindness';
 import { Gift, Heart, Book, Shirt, Gamepad2, Apple, PartyPopper, Send, Users, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,11 +12,13 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Donate = () => {
   const location = useLocation();
   const urlParams = new URLSearchParams(location.search);
   const defaultTab = urlParams.get('tab') === 'get-help' ? 'get-help' : 'donate';
+  const { user } = useAuth();
   
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [donationMessage, setDonationMessage] = useState('');
@@ -40,10 +42,18 @@ const Donate = () => {
   // Modal states
   const [showDonationSuccess, setShowDonationSuccess] = useState(false);
   const [showHelpRequestSuccess, setShowHelpRequestSuccess] = useState(false);
+  const [showCertificate, setShowCertificate] = useState(false);
 
   // Form validation states
   const [donationErrors, setDonationErrors] = useState<{[key: string]: string}>({});
   const [helpErrors, setHelpErrors] = useState<{[key: string]: string}>({});
+
+  // Certificate data
+  const [certificateData, setCertificateData] = useState({
+    userName: '',
+    donationType: '',
+    donationDate: ''
+  });
 
   const donationItems = [
     { id: 'school-supplies', name: 'School Supplies', icon: Book, description: 'Notebooks, pens, pencils, erasers', emoji: '📚' },
@@ -152,6 +162,28 @@ const Donate = () => {
 
     console.log('Donation submitted:', { selectedItems, donationMessage, donorInfo });
     
+    // Prepare certificate data
+    const donationType = selectedItems.map(id => {
+      const itemMap: { [key: string]: string } = {
+        'school-supplies': 'School Supplies',
+        'clothes': 'Clothes',
+        'toys': 'Toys',
+        'snacks': 'Snacks',
+        'birthday-kit': 'Birthday Kit'
+      };
+      return itemMap[id] || id;
+    }).join(', ');
+
+    setCertificateData({
+      userName: donorInfo.name || user?.name || 'Kind Friend',
+      donationType,
+      donationDate: new Date().toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      })
+    });
+    
     // Show success modal
     setShowDonationSuccess(true);
   };
@@ -177,11 +209,15 @@ const Donate = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleShowCertificate = () => {
+    setShowDonationSuccess(false);
+    setShowCertificate(true);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-warm-white to-soft-gray">
       <Header />
       
-      {/* Hero Section with improved spacing */}
       <section className="pt-32 pb-24 gradient-premium-hero relative overflow-hidden">
         <div className="floating-shapes"></div>
         <div className="container mx-auto px-8">
@@ -196,7 +232,6 @@ const Donate = () => {
         </div>
       </section>
 
-      {/* Main Content with enhanced spacing */}
       <section className="py-24 bg-gradient-to-b from-white to-soft-gray">
         <div className="container mx-auto px-8">
           <Tabs defaultValue={defaultTab} className="max-w-6xl mx-auto">
@@ -380,7 +415,6 @@ const Donate = () => {
               </Card>
             </TabsContent>
 
-            {/* Get Help Tab */}
             <TabsContent value="get-help" className="animate-fade-in-up">
               <Card className="border-0 shadow-2xl rounded-3xl overflow-hidden">
                 <CardHeader className="text-center pb-12 bg-gradient-to-br from-baby-blue/20 to-mint/20">
@@ -393,7 +427,6 @@ const Donate = () => {
                 </CardHeader>
                 <CardContent className="p-12">
                   <form onSubmit={handleHelpRequest} className="space-y-10">
-                    {/* Personal Information with validation */}
                     <div className="grid md:grid-cols-2 gap-8">
                       <div className="space-y-3">
                         <Label htmlFor="help-name" className="text-lg font-semibold text-gray-800 block mb-2">
@@ -478,7 +511,6 @@ const Donate = () => {
                       </div>
                     </div>
 
-                    {/* What do you need */}
                     <div className="space-y-3">
                       <Label htmlFor="need" className="text-lg font-semibold text-gray-800 block mb-2">
                         What do you need help with? *
@@ -507,7 +539,6 @@ const Donate = () => {
                       )}
                     </div>
 
-                    {/* Description */}
                     <div className="space-y-3">
                       <Label htmlFor="description" className="text-lg font-semibold text-gray-800 block mb-2">
                         Tell us more about your situation *
@@ -529,7 +560,6 @@ const Donate = () => {
                       )}
                     </div>
 
-                    {/* Urgency */}
                     <div className="space-y-4">
                       <Label className="text-lg font-semibold text-gray-800 block mb-2">
                         How urgent is this request?
@@ -582,15 +612,24 @@ const Donate = () => {
       <DonationSuccessModal
         isOpen={showDonationSuccess}
         onClose={() => setShowDonationSuccess(false)}
-        userName={donorInfo.name || 'Friend'}
+        userName={donorInfo.name || user?.name || 'Friend'}
         selectedItems={selectedItems}
         onMakeAnotherDonation={handleMakeAnotherDonation}
+        onShowCertificate={handleShowCertificate}
       />
 
       <HelpRequestSuccessModal
         isOpen={showHelpRequestSuccess}
         onClose={() => setShowHelpRequestSuccess(false)}
         userName={helpRequest.name || 'Friend'}
+      />
+
+      <CertificateOfKindness
+        isOpen={showCertificate}
+        onClose={() => setShowCertificate(false)}
+        userName={certificateData.userName}
+        donationType={certificateData.donationType}
+        donationDate={certificateData.donationDate}
       />
 
       <Footer />

@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Heart, Gift } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface DonationSuccessModalProps {
   isOpen: boolean;
@@ -11,7 +12,6 @@ interface DonationSuccessModalProps {
   selectedItems: string[];
   onMakeAnotherDonation: () => void;
   onShowCertificate?: () => void;
-  isFirstDonation?: boolean;
 }
 
 const DonationSuccessModal: React.FC<DonationSuccessModalProps> = ({
@@ -20,9 +20,13 @@ const DonationSuccessModal: React.FC<DonationSuccessModalProps> = ({
   userName,
   selectedItems,
   onMakeAnotherDonation,
-  onShowCertificate,
-  isFirstDonation = false
+  onShowCertificate
 }) => {
+  const { user, incrementDonationCount } = useAuth();
+  
+  // Check if this is the user's first donation
+  const isFirstDonation = user && (user.donationCount === 0 || user.donationCount === undefined);
+
   const itemNames = selectedItems.map(id => {
     const itemMap: { [key: string]: string } = {
       'school-supplies': 'School Supplies',
@@ -36,9 +40,11 @@ const DonationSuccessModal: React.FC<DonationSuccessModalProps> = ({
 
   useEffect(() => {
     if (isOpen) {
+      // Increment donation count when modal opens
+      incrementDonationCount();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }, [isOpen]);
+  }, [isOpen, incrementDonationCount]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
