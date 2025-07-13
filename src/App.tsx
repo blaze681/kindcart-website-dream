@@ -14,6 +14,7 @@ import Contact from "./pages/Contact";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
+import KindnessExchange from "./pages/KindnessExchange";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/donate" element={<Donate />} />
             <Route path="/impact" element={<Impact />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/exchange" element={<KindnessExchange />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route 
